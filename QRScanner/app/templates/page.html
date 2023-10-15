@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPE Attendance System</title>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+
+<body>
+    <div class="nav">
+        <button id="signInButton">Sign-in</button>
+    </div>
+    <div class="content">
+        <!-- Content that appears post-sign-in would go here. Example: -->
+        <!-- <button id="startWebcam">Start Webcam</button> -->
+        <!-- <img src="path_to_generated_qr_code.png" alt="Your QR Code"> -->
+    </div>
+
+    <script>
+        // You can handle sign-in logic here. For simplicity, I'm showing how it might look post-sign-in.
+        document.getElementById('signInButton').addEventListener('click', function() {
+            // For demonstration purposes:
+            const contentDiv = document.querySelector('.content');
+            // Depending on whether the user is a board member or a regular member, display the appropriate content.
+            // Assuming you have some way to check this, maybe a user.role or something:
+            const userRole = 'board'; // This would be dynamically set post-sign-in.
+            if (userRole === 'board') {
+                contentDiv.innerHTML = '<button id="startWebcam">Start Webcam</button>';
+            } else {
+                contentDiv.innerHTML = '<img src="path_to_generated_qr_code.png" alt="Your QR Code">';
+            }
+        });
+    </script>
+</body>
+
+</html>
