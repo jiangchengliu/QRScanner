@@ -6,33 +6,123 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UPE Attendance System</title>
-    <link rel="stylesheet" href="stylesheet.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: darkgray;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .nav {
+            background-color: #222;
+            width: 100%;
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ffffff;
+            margin: 0;
+        }
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .content {
+            margin-top: 80px;
+            align-items: center; 
+            display: flex; 
+            flex-direction: column;
+        }
+
+        #webcamFeed.flipped {
+            transform: scaleX(-1);
+        }
+    </style>
 </head>
 
 <body>
     <div class="nav">
+        <h1>UPE Chapter Meeting Attendance</h1>
         <button id="signInButton">Sign-in</button>
+        <button id="adminSignInButton">Admin Sign-in</button>
+        <button id="stopWebcam" style="display:none;">Stop Webcam</button>
     </div>
     <div class="content">
-        <!-- Content that appears post-sign-in would go here. Example: -->
-        <!-- <button id="startWebcam">Start Webcam</button> -->
-        <!-- <img src="path_to_generated_qr_code.png" alt="Your QR Code"> -->
+        <!-- post-sign-in content goes here. -->
     </div>
-
     <script>
-        // You can handle sign-in logic here. For simplicity, I'm showing how it might look post-sign-in.
+        let webcamStream;
+    
         document.getElementById('signInButton').addEventListener('click', function() {
-            // For demonstration purposes:
             const contentDiv = document.querySelector('.content');
-            // Depending on whether the user is a board member or a regular member, display the appropriate content.
-            // Assuming you have some way to check this, maybe a user.role or something:
-            const userRole = 'board'; // This would be dynamically set post-sign-in.
-            if (userRole === 'board') {
-                contentDiv.innerHTML = '<button id="startWebcam">Start Webcam</button>';
-            } else {
-                contentDiv.innerHTML = '<img src="path_to_generated_qr_code.png" alt="Your QR Code">';
-            }
+            contentDiv.innerHTML = '<img src="path_to_generated_qr_code.png" alt="Your QR Code">';
         });
+    
+        document.getElementById('adminSignInButton').addEventListener('click', function() {
+            const contentDiv = document.querySelector('.content');
+            contentDiv.innerHTML = `
+                <button id="startWebcam">Start Webcam</button>
+                <button id="stopWebcam" style="display:none;">Stop Webcam</button>
+                <video id="webcamFeed" width="640" height="480" autoplay style="display:none;"></video>
+            `;
+    
+            document.getElementById('startWebcam').addEventListener('click', function() {
+                const webcamFeed = document.getElementById('webcamFeed');
+                const startWebcamButton = document.getElementById('startWebcam');
+                const stopWebcamButton = document.getElementById('stopWebcam');
+    
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                        webcamFeed.style.display = "block";
+                        webcamFeed.style.border = "3px solid black";
+                        webcamFeed.classList.add('flipped');
+                        webcamFeed.srcObject = stream;
+                        webcamStream = stream;
+    
+                        startWebcamButton.style.display = 'none';
+                        stopWebcamButton.style.display = 'inline-block';
+    
+                    }).catch(function(err) {
+                        console.error("Error accessing webcam: " + err);
+                    });
+                } else {
+                    console.error("Webcam access not supported on this browser.");
+                }
+            });
+    
+            document.getElementById('stopWebcam').addEventListener('click', function() {
+                if (webcamStream && webcamStream.getTracks) {
+                    webcamStream.getTracks().forEach(function(track) {
+                        track.stop();
+                    });
+    
+                    document.getElementById('webcamFeed').style.display = 'none';
+                    document.getElementById('stopWebcam').style.display = 'none';
+                    document.getElementById('startWebcam').style.display = 'inline-block';
+                }
+            });
+        });
+    
     </script>
 </body>
 
