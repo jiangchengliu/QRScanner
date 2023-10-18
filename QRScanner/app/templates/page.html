@@ -68,6 +68,7 @@
     <div class="content">
         <!-- post-sign-in content goes here. -->
     </div>
+    <script src="./node_modules/jsqr/dist/jsQR.js"></script>
     <script>
         let webcamStream;
 
@@ -124,6 +125,23 @@
                 contentDiv.innerHTML = '<img src="path_to_generated_qr_code.png" alt="Your QR Code">';
             }
         });
+
+        function scanQRCode(video, canvasElement) {
+            var canvas = canvasElement.getContext('2d');
+
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                canvasElement.height = video.videoHeight;
+                canvasElement.width = video.videoWidth;
+                canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+                var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                var code = jsQR(imageData.data, imageData.width, imageData.height);
+                if (code) {
+                    console.log("Found QR code:", code.data);
+                    //when we scan a QR code
+                }
+            }
+            requestAnimationFrame(() => scanQRCode(video, canvasElement));
+        }
 
     </script>
 </body>
