@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from configs import client_id, secret
+from QRScanner.configs import client_id, secret
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -148,12 +148,13 @@ SOCIALACCOUNT_PROVIDERS = {
             'email',
         ],
         'AUTH_PARAMS': {
-            'access_type': 'offline',
+            'access_type': 'online',
         }
     }
 }
 
 AUTH_USER_MODEL = "app.User" 
+ACCOUNT_ADAPTER = 'app.adapters.CustomAccountAdapter'  # Replace 'yourapp' with your app name
 
 
 
