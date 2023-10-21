@@ -6,9 +6,11 @@ from django.core.files import File
 from PIL import Image, ImageDraw
 
 # Create your models here.
-class CustomUser(AbstractUser):
+class User(AbstractUser):
     email = models.EmailField(unique=True)
     qr_code = models.ImageField(upload_to='qr_codes/', null=True, blank=True)
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
 
     def __str__(self):
         return str(self.email)
@@ -24,9 +26,5 @@ class CustomUser(AbstractUser):
         self.qr_code.save(fname, File(buffer), save=False)
         canvas.close()
         super().save(*args, **kwargs)
-
-
-
     
-#John's models
 
