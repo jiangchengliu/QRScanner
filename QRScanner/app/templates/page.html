@@ -57,6 +57,7 @@
         #webcamFeed.flipped {
             transform: scaleX(-1);
         }
+        
     </style>
 </head>
 
@@ -71,36 +72,41 @@
     <script src="./node_modules/jsqr/dist/jsQR.js"></script>
     <script>
         let webcamStream;
-
+    
         document.getElementById('signInButton').addEventListener('click', function() {
             const contentDiv = document.querySelector('.content');
             
-            
             const isAdmin = Math.random() < 0.5; 
-
+    
             if (isAdmin) {
                 contentDiv.innerHTML = `
                     <button id="startWebcam">Start Webcam</button>
-                    <video id="webcamFeed" width="640" height="480" autoplay style="display:none;"></video>
+                    <video id="webcamFeed" width="320" height="240" autoplay style="display:none;"></video>
                     <button id="stopWebcam" style="display:none;">Stop Webcam</button>
                 `;
-
+    
                 const webcamFeed = document.getElementById('webcamFeed');
                 const startWebcamButton = document.getElementById('startWebcam');
                 const stopWebcamButton = document.getElementById('stopWebcam');
-
+    
                 startWebcamButton.addEventListener('click', function() {
                     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                        navigator.mediaDevices.getUserMedia({ 
+                            video: {
+                                width: { ideal: 320 },
+                                height: { ideal: 240 }
+                            }
+                        }).then(function(stream) {
                             webcamFeed.style.display = "block";
                             webcamFeed.style.border = "3px solid black";
                             webcamFeed.classList.add('flipped');
                             webcamFeed.srcObject = stream;
                             webcamStream = stream;
-
+    
                             startWebcamButton.style.display = 'none';
                             stopWebcamButton.style.display = 'inline-block';
-
+                            scanQRCode(webcamFeed);
+    
                         }).catch(function(err) {
                             console.error("Error accessing webcam: " + err);
                         });
@@ -108,42 +114,51 @@
                         console.error("Webcam access not supported on this browser.");
                     }
                 });
-
+    
                 stopWebcamButton.addEventListener('click', function() {
                     if (webcamStream && webcamStream.getTracks) {
                         webcamStream.getTracks().forEach(function(track) {
                             track.stop();
                         });
-
+    
                         webcamFeed.style.display = 'none';
                         stopWebcamButton.style.display = 'none';
                         startWebcamButton.style.display = 'inline-block';
                     }
                 });
-
+    
             } else {
                 contentDiv.innerHTML = '<img src="path_to_generated_qr_code.png" alt="Your QR Code">';
             }
         });
-
-        function scanQRCode(video, canvasElement) {
-            var canvas = canvasElement.getContext('2d');
-
+    
+        function scanQRCode(video, canvasElement = null) {
+            if (!canvasElement) {
+                canvasElement = document.createElement('canvas');
+                canvasElement.style.display = 'none';  // Hide the canvas since it's only for processing
+                document.body.appendChild(canvasElement);
+            }
+    
+            const canvas = canvasElement.getContext('2d');
+    
             if (video.readyState === video.HAVE_ENOUGH_DATA) {
                 canvasElement.height = video.videoHeight;
                 canvasElement.width = video.videoWidth;
                 canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-                var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
-                var code = jsQR(imageData.data, imageData.width, imageData.height);
+                const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
                 if (code) {
                     console.log("Found QR code:", code.data);
+                    alert("QR code detected");
                     //when we scan a QR code
                 }
             }
-            requestAnimationFrame(() => scanQRCode(video, canvasElement));
+            setTimeout(() => {
+                requestAnimationFrame(() => scanQRCode(video, canvasElement));
+            }, 500);
         }
-
     </script>
+    
 </body>
 
 </html>
