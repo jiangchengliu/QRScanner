@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -66,14 +67,15 @@
 <body>
     <div class="nav">
         <h1>UPE Chapter Meeting Attendance</h1>
-        <button id="signInButton">Sign-in</button>
+        <a id="signInButton" href="{% url 'social:begin' 'google' %}?next={{ request.path }}" class="button">Sign-in</a>
     </div>
     <div class="content">
         {% if qr_code %}
             <img src="{{ MEDIA_URL }}{{ qr_code }}" alt="Your QR Code">
         {% endif %}
     </div>
-    <script src="../../../node_modules/jsqr/dist/jsQR.js"></script>
+    <!-- <script src="../../../node_modules/jsqr/dist/jsQR.js"></script> -->
+    <script src="{% static 'node_modules/jsqr/dist/jsQR.js' %}"></script>
     <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
 
     <script>
@@ -90,15 +92,18 @@
 
         document.getElementById('signInButton').addEventListener('click', function() {
             const auth2 = gapi.auth2.getAuthInstance();
-            auth2.signIn().then(function(googleUser) {
-                const profile = googleUser.getBasicProfile();
-                const userEmail = profile.getEmail();
-                const isAdmin = determineIfUserIsAdmin(userEmail);
-                handleUser(isAdmin);
-
-            }, function(error) {
-                console.error(error);
-            });
+            if (!auth2.isSignedIn.get()) {
+                window.location.href = "{% url 'social:begin' 'google' %}?next={{ request.path }}";
+            } else {
+                auth2.signIn().then(function(googleUser) {
+                    const profile = googleUser.getBasicProfile();
+                    const userEmail = profile.getEmail();
+                    const isAdmin = determineIfUserIsAdmin(userEmail);
+                    handleUser(isAdmin);
+                }, function(error) {
+                    console.error(error);
+                });
+            }
         });
 
         function determineIfUserIsAdmin(email) {
