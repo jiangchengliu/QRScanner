@@ -69,7 +69,9 @@
         <button id="signInButton">Sign-in</button>
     </div>
     <div class="content">
-        <!-- post-sign-in content goes here. -->
+        {% if qr_code %}
+            <img src="{{ MEDIA_URL }}{{ qr_code }}" alt="Your QR Code">
+        {% endif %}
     </div>
     <script src="../../../node_modules/jsqr/dist/jsQR.js"></script>
     <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
