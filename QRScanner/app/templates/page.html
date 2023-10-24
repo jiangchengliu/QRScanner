@@ -64,7 +64,9 @@
 
     <div class="nav">
         <h1>UPE Chapter Meeting Attendance</h1>
-        <a id="signInButton" href="{% url 'social:begin' 'google' %}?next={{ request.path }}" class="button">Sign-in</a>
+        <a href="{% provider_login_url 'google' %}">
+            <button>Sign in with Google</button>
+        </a>
     </div>
     <div class="content">
         {% if qr_code %}
@@ -73,7 +75,6 @@
     </div>
 
     <script>
-        
         let webcamStream;
 
         function determineIfUserIsAdmin(email) {
