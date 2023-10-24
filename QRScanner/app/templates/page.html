@@ -1,4 +1,5 @@
-{% load static %}
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,57 +55,27 @@
             display: flex;
             flex-direction: column;
         }
-
-        
-        /*#webcamFeed.flipped {
-            transform: scaleX(-1);
-        }*/
-        
-        
     </style>
 </head>
 
 <body>
+    <script src="../../../node_modules/jsqr/dist/jsQR.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+
     <div class="nav">
         <h1>UPE Chapter Meeting Attendance</h1>
-        <a id="signInButton" href="{% url 'social:begin' 'google' %}?next={{ request.path }}" class="button">Sign-in</a>
+        <a href="{% provider_login_url 'google' %}">
+            <button>Sign in with Google</button>
+        </a>
     </div>
     <div class="content">
         {% if qr_code %}
             <img src="{{ MEDIA_URL }}{{ qr_code }}" alt="Your QR Code">
         {% endif %}
     </div>
-    <!-- <script src="../../../node_modules/jsqr/dist/jsQR.js"></script> -->
-    <script src="{% static 'node_modules/jsqr/dist/jsQR.js' %}"></script>
-    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
 
     <script>
         let webcamStream;
-    
-        function init() {
-            console.log("Initializing Google Auth2");
-            gapi.load('auth2', function() {
-                gapi.auth2.init({
-                    client_id: '178769536235-j7slrke4k0ecmnje4t1jnotk9dqeli05.apps.googleusercontent.com'
-                });
-            });
-        }
-
-        document.getElementById('signInButton').addEventListener('click', function() {
-            const auth2 = gapi.auth2.getAuthInstance();
-            if (!auth2.isSignedIn.get()) {
-                window.location.href = "{% url 'social:begin' 'google' %}?next={{ request.path }}";
-            } else {
-                auth2.signIn().then(function(googleUser) {
-                    const profile = googleUser.getBasicProfile();
-                    const userEmail = profile.getEmail();
-                    const isAdmin = determineIfUserIsAdmin(userEmail);
-                    handleUser(isAdmin);
-                }, function(error) {
-                    console.error(error);
-                });
-            }
-        });
 
         function determineIfUserIsAdmin(email) {
             if (email === 'aidsc@bu.edu'){
@@ -198,7 +169,9 @@
             }, 500);
         }
     </script>
-    
+
+    <!-- Load necessary JavaScript files -->
+    {% providers_media_js %}
 </body>
 
 </html>
