@@ -1,21 +1,23 @@
 from django.shortcuts import render
 import qrcode
+from .models import User
 
 # Create your views here.
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'page.html')
 
-"""
-def generate_qr(request):
-    if request.method == 'POST':
-        data = request.POST['qr_data']
-        img = qrcode.make(data)
-        img.save('app/static/app/qr.png')
-        return render(request, 'app/index.html')
+def get_qr_code(request):
+    if request.user.is_authenticated:
+        user = User.objects.get(email=request.user.email)
+        context = {
+            'qr_code': user.qr_code
+        }
+        render(request, 'page.html', context)
     else:
-        return render(request, 'app/index.html')
-"""
+        return render(request, 'page.html')
+
+
 
 
 
