@@ -161,14 +161,14 @@
                 });
     
             } else {
-                contentDiv.innerHTML = '<img src="path_to_generated_qr_code.png" alt="Your QR Code">';
+                contentDiv.innerHTML = '<img src="path_to_generated_qr_code.png" alt="Your QR Code">'; // fix this later
             }
         };
     
         function scanQRCode(video, canvasElement = null) {
             if (!canvasElement) {
                 canvasElement = document.createElement('canvas');
-                canvasElement.style.display = 'none';  // Hide the canvas since it's only for processing
+                canvasElement.style.display = 'none';  // hiding the canvas since it's only for processing
                 document.body.appendChild(canvasElement);
             }
     
@@ -182,7 +182,7 @@
                 const code = jsQR(imageData.data, imageData.width, imageData.height);
                 if (code) {
                     console.log("Found QR code:", code.data);
-                    alert("QR code detected");
+                    alert("QR code detected!");
                     //when we scan a QR code
                 }
             }
