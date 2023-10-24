@@ -17,8 +17,9 @@ class User(AbstractUser):
     
     def save(self, *args, **kwargs):
         if self.qr_code == None:
-            qrcodeimg = qrcode.make(self.email)
-            canvas = Image.new('RGB', (qrcodeimg.pixel_size, qrcodeimg.pixel_size,), 'white')
+            qr_data = f"Email: {self.email}\nFull Name: {self.first_name} {self.last_name}"
+            qrcodeimg = qrcode.make(qr_data)
+            canvas = Image.new('RGB', (qrcodeimg.pixel_size, qrcodeimg.pixel_size,), 'white')          
             draw = ImageDraw.Draw(canvas)
             canvas.paste(qrcodeimg)
             fname = f'qr_code-{self.email}.png'
