@@ -72,15 +72,45 @@
         <!-- post-sign-in content goes here. -->
     </div>
     <script src="../../../node_modules/jsqr/dist/jsQR.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
 
     <script>
         let webcamStream;
     
+        function init() {
+            console.log("Initializing Google Auth2");
+            gapi.load('auth2', function() {
+                gapi.auth2.init({
+                    client_id: '178769536235-j7slrke4k0ecmnje4t1jnotk9dqeli05.apps.googleusercontent.com'
+                });
+            });
+        }
+
         document.getElementById('signInButton').addEventListener('click', function() {
-            const contentDiv = document.querySelector('.content');
-            
-            const isAdmin = Math.random() < 0.5; 
-    
+            const auth2 = gapi.auth2.getAuthInstance();
+            auth2.signIn().then(function(googleUser) {
+                const profile = googleUser.getBasicProfile();
+                const userEmail = profile.getEmail();
+                const isAdmin = determineIfUserIsAdmin(userEmail);
+                handleUser(isAdmin);
+
+            }, function(error) {
+                console.error(error);
+            });
+        });
+
+        function determineIfUserIsAdmin(email) {
+            if (email === 'aidsc@bu.edu'){
+                return true;
+            }
+            else 
+            {
+                return false;
+            }
+        }
+
+    function handleUser(isAdmin) {
+        const contentDiv = document.querySelector('.content');
             if (isAdmin) {
                 contentDiv.innerHTML = `
                     <button id="startWebcam">Start Webcam</button>
@@ -133,7 +163,7 @@
             } else {
                 contentDiv.innerHTML = '<img src="path_to_generated_qr_code.png" alt="Your QR Code">';
             }
-        });
+        };
     
         function scanQRCode(video, canvasElement = null) {
             if (!canvasElement) {
