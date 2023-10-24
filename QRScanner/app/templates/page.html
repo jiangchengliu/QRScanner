@@ -64,12 +64,7 @@
 
     <div class="nav">
         <h1>UPE Chapter Meeting Attendance</h1>
-        <a href="{% provider_login_url 'google' %}">
-            <button>Sign in with Google</button>
-        </a>
-        <a href="{% url 'account_logout' %}">
-            <button>Sign out</button>
-        </a>
+        <a id="signInButton" href="{% url 'social:begin' 'google' %}?next={{ request.path }}" class="button">Sign-in</a>
     </div>
     <div class="content">
         {% if qr_code %}
@@ -179,7 +174,3 @@
 </body>
 
 </html>
-
-
-    
-    
