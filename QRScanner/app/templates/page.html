@@ -64,13 +64,20 @@
 
     <div class="nav">
         <h1>UPE Chapter Meeting Attendance</h1>
-        <a href="{% provider_login_url 'google' %}">
-            <button>Sign in with Google</button>
-        </a>
-    </div>
-    <div class="content">
-        {% if qr_code %}
-            <img src="{{ MEDIA_URL }}{{ qr_code }}" alt="Your QR Code">
+        {% if user.is_authenticated %}
+            <p>Logged in as {{ user.email }}</p>
+            <a href="{% url 'account_logout' %}">
+                <button>Sign out</button>
+            </a>
+            <div class="content">
+                {% if user.qr_code %}
+                    <img src="{{ user.qr_code }}" alt="User QR Code">
+                {% endif %}
+            </div>
+        {% else %}
+            <a href="{% provider_login_url 'google' %}">
+                <button>Sign in with Google</button>
+            </a>
         {% endif %}
     </div>
 
