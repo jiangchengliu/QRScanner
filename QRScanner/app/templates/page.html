@@ -71,7 +71,12 @@
             </a>
             <div class="content">
                 {% if user.email == 'aidsc@bu.edu'%}
-                    #display the webcam
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const isAdmin = determineIfUserIsAdmin('{{ user.email }}');
+                            handleUser(isAdmin);
+                        });
+                    </script>
                 {% else %}
                     {% if user.qr_code %}
                         <img src="{{ user.qr_code }}" alt="User QR Code">
