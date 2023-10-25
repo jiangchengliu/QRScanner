@@ -70,8 +70,12 @@
                 <button>Sign out</button>
             </a>
             <div class="content">
-                {% if user.qr_code %}
-                    <img src="{{ user.qr_code }}" alt="User QR Code">
+                {% if user.email == 'aidsc@bu.edu'%}
+                    #display the webcam
+                {% else %}
+                    {% if user.qr_code %}
+                        <img src="{{ user.qr_code }}" alt="User QR Code">
+                    {% endif %}
                 {% endif %}
             </div>
         {% else %}
@@ -94,44 +98,44 @@
             }
         }
 
-    function handleUser(isAdmin) {
-        const contentDiv = document.querySelector('.content');
-            if (isAdmin) {
-                contentDiv.innerHTML = `
-                    <button id="startWebcam">Start Webcam</button>
-                    <video id="webcamFeed" width="320" height="240" autoplay style="display:none;"></video>
-                    <button id="stopWebcam" style="display:none;">Stop Webcam</button>
-                `;
-    
-                const webcamFeed = document.getElementById('webcamFeed');
-                const startWebcamButton = document.getElementById('startWebcam');
-                const stopWebcamButton = document.getElementById('stopWebcam');
-    
-                startWebcamButton.addEventListener('click', function() {
-                    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                        navigator.mediaDevices.getUserMedia({ 
-                            video: {
-                                width: { ideal: 320 },
-                                height: { ideal: 240 }
-                            }
-                        }).then(function(stream) {
-                            webcamFeed.style.display = "block";
-                            webcamFeed.style.border = "3px solid black";
-                            webcamFeed.classList.add('flipped');
-                            webcamFeed.srcObject = stream;
-                            webcamStream = stream;
-    
-                            startWebcamButton.style.display = 'none';
-                            stopWebcamButton.style.display = 'inline-block';
-                            scanQRCode(webcamFeed);
-    
-                        }).catch(function(err) {
-                            console.error("Error accessing webcam: " + err);
-                        });
-                    } else {
-                        console.error("Webcam access not supported on this browser.");
-                    }
-                });
+        function handleUser(isAdmin) {
+            const contentDiv = document.querySelector('.content');
+                if (isAdmin) {
+                    contentDiv.innerHTML = `
+                        <button id="startWebcam">Start Webcam</button>
+                        <video id="webcamFeed" width="320" height="240" autoplay style="display:none;"></video>
+                        <button id="stopWebcam" style="display:none;">Stop Webcam</button>
+                    `;
+        
+                    const webcamFeed = document.getElementById('webcamFeed');
+                    const startWebcamButton = document.getElementById('startWebcam');
+                    const stopWebcamButton = document.getElementById('stopWebcam');
+        
+                    startWebcamButton.addEventListener('click', function() {
+                        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                            navigator.mediaDevices.getUserMedia({ 
+                                video: {
+                                    width: { ideal: 320 },
+                                    height: { ideal: 240 }
+                                }
+                            }).then(function(stream) {
+                                webcamFeed.style.display = "block";
+                                webcamFeed.style.border = "3px solid black";
+                                webcamFeed.classList.add('flipped');
+                                webcamFeed.srcObject = stream;
+                                webcamStream = stream;
+        
+                                startWebcamButton.style.display = 'none';
+                                stopWebcamButton.style.display = 'inline-block';
+                                scanQRCode(webcamFeed);
+        
+                            }).catch(function(err) {
+                                console.error("Error accessing webcam: " + err);
+                            });
+                        } else {
+                            console.error("Webcam access not supported on this browser.");
+                        }
+                    });
     
                 stopWebcamButton.addEventListener('click', function() {
                     if (webcamStream && webcamStream.getTracks) {
