@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 from QRScanner.configs import client_id, secret
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -156,8 +157,12 @@ SOCIALACCOUNT_PROVIDERS = {
 AUTH_USER_MODEL = "app.User" 
 ACCOUNT_ADAPTER = 'app.adapters.CustomAccountAdapter'  # Replace 'yourapp' with your app name
 
-
-
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+MEDIA_URL = '/qr_codes/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'qr_codes')
+

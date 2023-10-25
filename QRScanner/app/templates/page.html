@@ -68,7 +68,7 @@
     <div class="nav">
         <h1>UPE Chapter Meeting Attendance</h1>
         {% if user.is_authenticated %}
-            <p>Logged in as {{ user.email }}</p>
+            <p style="color: #ffffff;">Logged in as {{ user.first_name }} {{ user.last_name }} </p>
             <a href="{% url 'account_logout' %}">
                 <button>Sign out</button>
             </a>
@@ -82,7 +82,7 @@
                     </script>
                 {% else %}
                     {% if user.qr_code %}
-                        <img src="{{ user.qr_code }}" alt="User QR Code">
+                        <img src="{{ MEDIA_URL }}{{ user.qr_code }}" alt="User QR Code">
                     {% endif %}
                 {% endif %}
             </div>
