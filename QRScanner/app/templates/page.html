@@ -59,12 +59,11 @@
             transform: scaleX(-1);
         }
     </style>
-    
+    <script src="../QRScanner/app/templates/node_modules/jsqr/dist/jsQR.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
 </head>
 
 <body>
-    <script src="node_modules/jsqr/dist/jsQR.js"></script>
-    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
     <div class="nav">
         <h1>UPE Chapter Meeting Attendance</h1>
         {% if user.is_authenticated %}
@@ -82,7 +81,7 @@
                     </script>
                 {% else %}
                     {% if user.qr_code %}
-                        <img src="{{ MEDIA_URL }}{{ user.qr_code }}" alt="User QR Code">
+                        <img src="{{ MEDIA_URL }}qr_codes/{{ user.qr_code }}" alt="User QR Code">
                     {% endif %}
                 {% endif %}
             </div>
@@ -92,7 +91,7 @@
             </a>
         {% endif %}
     </div>
-
+    
     <script>
         let webcamStream;
 

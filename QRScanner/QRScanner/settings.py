@@ -155,7 +155,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 AUTH_USER_MODEL = "app.User" 
-ACCOUNT_ADAPTER = 'app.adapters.CustomAccountAdapter'  # Replace 'yourapp' with your app name
+ACCOUNT_ADAPTER = 'app.adapters.CustomAccountAdapter'
 
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
