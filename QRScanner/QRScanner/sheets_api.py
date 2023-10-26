@@ -5,7 +5,8 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import datetime
 
-def Sheet_Init():
+# Creates a new spreadshit with the name Title
+def Sheet_Init(title):
     # Set up the credentials
     credentials = service_account.Credentials.from_service_account_file(
         'C:/Users/rwhel/OneDrive/Desktop/Notes/College/.CLUBS/Upe/QRScanner/client_key.json', 
@@ -17,7 +18,7 @@ def Sheet_Init():
     # Create a new Google Sheets document
     spreadsheet = service.spreadsheets().create(body={
         'properties': {
-            'title': 'UPE_attendance_sheet'
+            'title': title
         }}).execute()
 
     # Extract the spreadsheet ID
@@ -26,6 +27,7 @@ def Sheet_Init():
     print(f"Created new Sheet with ID: {spreadsheet_id}")
     return spreadsheet_id
 
+# Takes a spreadsheet ID and creates a new meeting date if the current date is not in the sheets
 def Sheet_Update(spreadsheet_id):
     time = datetime.datetime.now()
     title = time.strftime("%Y-%m-%d")
@@ -60,6 +62,7 @@ def Sheet_Update(spreadsheet_id):
 
     print(f"Created a new subsheet with ID: {new_sheet_id}")
 
+# Checks if a spreadsheet has a subsheet of the given name
 def Sheet_Check(subsheet_name, spreadsheet_id):
     # Set up the credentials
     credentials = service_account.Credentials.from_service_account_file(
@@ -84,16 +87,14 @@ def Sheet_Check(subsheet_name, spreadsheet_id):
         print(f"No subsheet found with title '{subsheet_name}'")
         return False
 
-def Sheet_Search(spreadsheet_id, time):
+# Search the google sheets of the given sheet for a subsheet with the inputted title
+def Sheet_Search(spreadsheet_id, subsheet_title):
     # Set up the credentials
     credentials = service_account.Credentials.from_service_account_file(
         'C:/Users/rwhel/OneDrive/Desktop/Notes/College/.CLUBS/Upe/QRScanner/client_key.json', 
         scopes=['https://www.googleapis.com/auth/spreadsheets'])
     # Create a Google Sheets service
     service = build('sheets', 'v4', credentials=credentials)
-
-    # Specify the Google Sheet ID and the subsheet title
-    subsheet_title = time
 
     # Use the 'get' method to retrieve data from the specified subsheet
     response = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=subsheet_title).execute()
@@ -112,6 +113,7 @@ def Sheet_Search(spreadsheet_id, time):
     print(f"The index of the last empty cell in '{subsheet_title}' is (row: {last_empty_row}, column: {last_empty_column}).")
     return last_empty_row,last_empty_column
 
+# When given a string input, takes the string and inputs into the next available slot
 def Sheet_Add(input, spreadsheet_id):
     # Set up the credentials
     credentials = service_account.Credentials.from_service_account_file(
