@@ -63,7 +63,7 @@
 </head>
 
 <body>
-    <script src="../../../../node_modules/jsqr/dist/jsQR.js"></script>
+    <script src="node_modules/jsqr/dist/jsQR.js"></script>
     <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
     <div class="nav">
         <h1>UPE Chapter Meeting Attendance</h1>
@@ -162,31 +162,31 @@
             }
         };
     
-        function scanQRCode(video, canvasElement = null) {
-            if (!canvasElement) {
-                canvasElement = document.createElement('canvas');
-                canvasElement.style.display = 'none';  // hiding the canvas since it's only for processing
-                document.body.appendChild(canvasElement);
-            }
-    
-            const canvas = canvasElement.getContext('2d');
-    
-            if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                canvasElement.height = video.videoHeight;
-                canvasElement.width = video.videoWidth;
-                canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-                const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
-                const code = jsQR(imageData.data, imageData.width, imageData.height);
-                if (code) {
-                    console.log("Found QR code:", code.data);
-                    alert("QR code detected!");
-                    //when we scan a QR code
+            function scanQRCode(video, canvasElement = null) {
+                if (!canvasElement) {
+                    canvasElement = document.createElement('canvas');
+                    canvasElement.style.display = 'none';  // hiding the canvas since it's only for processing
+                    document.body.appendChild(canvasElement);
                 }
+        
+                const canvas = canvasElement.getContext('2d');
+        
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    canvasElement.height = video.videoHeight;
+                    canvasElement.width = video.videoWidth;
+                    canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+                    const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+                    if (code) {
+                        console.log("Found QR code:", code.data);
+                        alert("QR code detected!");
+                        //when we scan a QR code
+                    }
+                }
+                setTimeout(() => {
+                    requestAnimationFrame(() => scanQRCode(video, canvasElement));
+                }, 500);
             }
-            setTimeout(() => {
-                requestAnimationFrame(() => scanQRCode(video, canvasElement));
-            }, 500);
-        }
     </script>
 
     <!-- Load necessary JavaScript files -->
